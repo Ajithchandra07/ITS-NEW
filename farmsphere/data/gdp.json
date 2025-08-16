@@ -1,0 +1,16 @@
+{
+  "national": {
+    "agriculturePercent": 15,
+    "dairyPercent": 5
+  },
+  "states": [
+    { "state": "Uttar Pradesh", "agricultureGdpInCr": 185000, "dairyGdpInCr": 42000 },
+    { "state": "Maharashtra", "agricultureGdpInCr": 160000, "dairyGdpInCr": 38000 },
+    { "state": "Gujarat", "agricultureGdpInCr": 125000, "dairyGdpInCr": 52000 },
+    { "state": "Punjab", "agricultureGdpInCr": 98000, "dairyGdpInCr": 22000 },
+    { "state": "Karnataka", "agricultureGdpInCr": 102000, "dairyGdpInCr": 26000 },
+    { "state": "Tamil Nadu", "agricultureGdpInCr": 95000, "dairyGdpInCr": 21000 },
+    { "state": "Rajasthan", "agricultureGdpInCr": 92000, "dairyGdpInCr": 25000 },
+    { "state": "West Bengal", "agricultureGdpInCr": 88000, "dairyGdpInCr": 18000 }
+  ]
+}

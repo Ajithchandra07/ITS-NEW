@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>State — FarmSphere</title>
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link href="/assets/css/styles.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-900">
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="/index.html" class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-primary-600 text-white flex items-center justify-center font-bold">FS</div>
+          <span class="sr-only">FarmSphere</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-sm">
+          <a href="/crops.html" class="hover:text-primary-700">Crops</a>
+          <a href="/states.html" class="hover:text-primary-700">States</a>
+          <a href="/dashboard.html" class="hover:text-primary-700">Dashboard</a>
+          <a href="/login.html" class="inline-flex items-center justify-center rounded-md bg-primary-600 px-3.5 py-1.5 text-white hover:bg-primary-700">Login</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <a href="/states.html" class="text-sm text-primary-700">← Back to states</a>
+    <h1 id="title" class="mt-3 text-2xl font-bold">State</h1>
+
+    <div class="mt-6 grid md:grid-cols-3 gap-6">
+      <div class="md:col-span-2 card">
+        <h2 class="font-semibold">Agriculture vs Dairy</h2>
+        <canvas id="mixChart" height="200"></canvas>
+      </div>
+      <div class="card">
+        <h2 class="font-semibold">Top Suggested Crops</h2>
+        <ul id="cropList" class="mt-3 space-y-2 text-sm"></ul>
+      </div>
+    </div>
+  </main>
+
+  <footer class="border-t border-gray-200 py-8 mt-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-sm text-gray-600 flex flex-col md:flex-row items-center justify-between gap-3">
+      <p>© <span id="year"></span> FarmSphere.</p>
+      <div class="flex items-center gap-4">
+        <a href="/dashboard.html" class="hover:text-primary-700">Survey & Reports</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/app.js"></script>
+  <script src="/assets/js/charts.js"></script>
+  <script>
+    (async function() {
+      try {
+        const p = new URLSearchParams(location.search);
+        const name = p.get('name');
+        document.getElementById('title').textContent = name || 'State';
+        const gdp = await FarmSphere.fetchJSON('/data/gdp.json');
+        const item = (gdp.states || []).find(s => s.state === name);
+        if (!item) return;
+        const ctx = document.getElementById('mixChart').getContext('2d');
+        FarmSphere.destroyChart('mixChart');
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Agriculture', 'Dairy'],
+            datasets: [{
+              label: 'GDP (Cr)',
+              data: [item.agricultureGdpInCr, item.dairyGdpInCr],
+              backgroundColor: ['#10b981', '#34d399'],
+              borderRadius: 6
+            }]
+          },
+          options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+        });
+
+        const crops = await FarmSphere.fetchJSON('/data/crops.json');
+        const relevant = crops.crops.filter(c => (c.states || []).includes(name)).slice(0,5);
+        const list = document.getElementById('cropList');
+        list.innerHTML = relevant.map(c => `<li><a class="text-primary-700 hover:underline" href="/crop.html?id=${encodeURIComponent(c.id)}">${c.name}</a> <span class="text-gray-500">(${c.season})</span></li>`).join('') || '<li class="text-gray-600">No specific suggestions available.</li>';
+      } catch (e) { console.error(e); }
+    })();
+  </script>
+</body>
+</html>

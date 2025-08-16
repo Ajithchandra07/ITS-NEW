@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crop — FarmSphere</title>
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link href="/assets/css/styles.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-900">
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="/index.html" class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-primary-600 text-white flex items-center justify-center font-bold">FS</div>
+          <span class="sr-only">FarmSphere</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-sm">
+          <a href="/crops.html" class="hover:text-primary-700">Crops</a>
+          <a href="/states.html" class="hover:text-primary-700">States</a>
+          <a href="/dashboard.html" class="hover:text-primary-700">Dashboard</a>
+          <a href="/login.html" class="inline-flex items-center justify-center rounded-md bg-primary-600 px-3.5 py-1.5 text-white hover:bg-primary-700">Login</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <a href="/crops.html" class="text-sm text-primary-700">← Back to crops</a>
+    <div id="content" class="mt-6"></div>
+  </main>
+
+  <footer class="border-t border-gray-200 py-8 mt-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-sm text-gray-600 flex flex-col md:flex-row items-center justify-between gap-3">
+      <p>© <span id="year"></span> FarmSphere.</p>
+      <div class="flex items-center gap-4">
+        <a href="/dashboard.html" class="hover:text-primary-700">Survey & Reports</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/app.js"></script>
+  <script>
+    function getId() {
+      const p = new URLSearchParams(location.search);
+      return p.get('id');
+    }
+    function row(label, value) {
+      return `<tr><th class="text-gray-600">${label}</th><td>${value}</td></tr>`;
+    }
+    (async function() {
+      try {
+        const id = getId();
+        const data = await FarmSphere.fetchJSON('/data/crops.json');
+        const crop = (data.crops || []).find(c => c.id === id);
+        const el = document.getElementById('content');
+        if (!crop) {
+          el.innerHTML = '<p class="text-gray-600">Crop not found.</p>';
+          return;
+        }
+        el.innerHTML = `
+          <h1 class="text-2xl font-bold">${crop.name}</h1>
+          <p class="mt-2 text-gray-700">${crop.subtitle}</p>
+          <div class="mt-6 card">
+            <h2 class="font-semibold">Cultivation Guide</h2>
+            <table class="table mt-3">
+              <tbody>
+                ${row('Season', crop.season)}
+                ${row('Soil Type', crop.soil)}
+                ${row('Climate', crop.climate)}
+                ${row('Irrigation', crop.irrigation)}
+                ${row('Time to Maturity (days)', crop.maturityDays)}
+                ${row('Average Yield (kg/acre)', FarmSphere.formatNumber(crop.yieldPerAcreKg))}
+                ${row('Profitability', crop.profitability)}
+                ${row('Suitable States', (crop.states || []).join(', '))}
+              </tbody>
+            </table>
+            <div class="mt-4 flex flex-wrap gap-2">
+              ${(crop.tags || []).map(t => `<span class="badge badge-blue">${t}</span>`).join('')}
+            </div>
+          </div>
+        `;
+      } catch (e) { console.error(e); }
+    })();
+  </script>
+</body>
+</html>
