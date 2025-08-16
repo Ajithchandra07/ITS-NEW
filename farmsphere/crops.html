@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Crops — FarmSphere</title>
+  <link rel="icon" href="/assets/favicon.ico" />
+  <link href="/assets/css/styles.css" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-900">
+  <header class="sticky top-0 z-40 bg-white/80 backdrop-blur border-b border-gray-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="/index.html" class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-primary-600 text-white flex items-center justify-center font-bold">FS</div>
+          <span class="sr-only">FarmSphere</span>
+        </a>
+        <nav class="hidden md:flex items-center gap-6 text-sm">
+          <a href="/crops.html" class="hover:text-primary-700">Crops</a>
+          <a href="/states.html" class="hover:text-primary-700">States</a>
+          <a href="/dashboard.html" class="hover:text-primary-700">Dashboard</a>
+          <a href="/login.html" class="inline-flex items-center justify-center rounded-md bg-primary-600 px-3.5 py-1.5 text-white hover:bg-primary-700">Login</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+    <div class="flex items-center justify-between">
+      <h1 class="text-2xl font-bold">Crops</h1>
+      <input id="search" type="search" placeholder="Search crops..." class="w-64 rounded-md border border-gray-300 px-3 py-2" />
+    </div>
+
+    <div class="mt-8">
+      <h2 id="high-demand" class="text-lg font-semibold">High-demand, low-supply</h2>
+      <div id="list-high" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+
+    <div class="mt-10">
+      <h2 id="medicinal" class="text-lg font-semibold">Medicinal & Rare</h2>
+      <div id="list-medicinal" class="mt-4 grid sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    </div>
+  </main>
+
+  <footer class="border-t border-gray-200 py-8 mt-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-sm text-gray-600 flex flex-col md:flex-row items-center justify-between gap-3">
+      <p>© <span id="year"></span> FarmSphere.</p>
+      <div class="flex items-center gap-4">
+        <a href="/dashboard.html" class="hover:text-primary-700">Survey & Reports</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/assets/js/app.js"></script>
+  <script>
+    const searchEl = document.getElementById('search');
+    const listHigh = document.getElementById('list-high');
+    const listMedicinal = document.getElementById('list-medicinal');
+    let crops = [];
+
+    function render() {
+      const q = (searchEl.value || '').toLowerCase();
+      const filtered = crops.filter(c => c.name.toLowerCase().includes(q) || (c.tags || []).some(t => t.toLowerCase().includes(q)));
+      const high = filtered.filter(c => c.category === 'high-demand');
+      const medicinal = filtered.filter(c => c.category === 'medicinal');
+
+      listHigh.innerHTML = high.map(card).join('');
+      listMedicinal.innerHTML = medicinal.map(card).join('');
+    }
+
+    function card(c) {
+      return `
+        <a href="/crop.html?id=${encodeURIComponent(c.id)}" class="block bg-white rounded-xl p-5 border border-gray-200 hover:shadow-md transition">
+          <div class="flex items-center justify-between">
+            <h3 class="font-semibold">${c.name}</h3>
+            <span class="badge badge-green">${c.season}</span>
+          </div>
+          <p class="mt-2 text-sm text-gray-600">${c.subtitle}</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            ${c.tags.slice(0,3).map(t => `<span class="badge badge-blue">${t}</span>`).join('')}
+          </div>
+        </a>`;
+    }
+
+    (async function() {
+      try {
+        const data = await FarmSphere.fetchJSON('/data/crops.json');
+        crops = data.crops;
+        render();
+      } catch (e) { console.error(e); }
+    })();
+
+    searchEl.addEventListener('input', render);
+  </script>
+</body>
+</html>
