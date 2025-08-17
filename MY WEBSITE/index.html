@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Agro Investment & Crop Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <div class="brand">
+        <div class="logo-circle">Ag</div>
+        <div class="brand-text">
+          <h1>Agro Investment & Crop Intelligence</h1>
+          <p class="tagline">Discover high-demand crops, state-wise opportunities, and funding support</p>
+        </div>
+      </div>
+      <nav class="top-nav">
+        <a href="#crops">Crops</a>
+        <a href="#states">States</a>
+        <a href="#units">Agro Units</a>
+        <a href="#schemes">Schemes</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="crops" class="section">
+      <div class="container">
+        <h2>Low Supply & High Demand Crops</h2>
+        <p class="section-subtitle">Segmented by horizon with indicative soil, weather, and unit economics</p>
+        <div class="segmented">
+          <button class="seg-btn active" data-seg="shortTerm">Short-Term</button>
+          <button class="seg-btn" data-seg="mediumTerm">Medium-Term</button>
+          <button class="seg-btn" data-seg="longTerm">Long-Term</button>
+        </div>
+        <div id="cropCards" class="card-grid"></div>
+      </div>
+    </section>
+
+    <section id="states" class="section alt">
+      <div class="container">
+        <div class="section-header-row">
+          <h2>State-Wise Crop Production & Revenue</h2>
+          <div class="state-controls">
+            <label for="stateSelect" class="sr-only">Choose State</label>
+            <select id="stateSelect"></select>
+            <input id="stateSearch" type="search" placeholder="Search state..." aria-label="Search state">
+          </div>
+        </div>
+        <div id="stateDetails" class="state-details"></div>
+      </div>
+    </section>
+
+    <section id="units" class="section">
+      <div class="container">
+        <h2>Long-Term Investment Agro Production Units</h2>
+        <p class="section-subtitle">Explore unit economics and subsidy support</p>
+        <div id="unitCards" class="card-grid"></div>
+      </div>
+    </section>
+
+    <section id="schemes" class="section alt">
+      <div class="container">
+        <h2>Government Schemes, Subsidies & Loans</h2>
+        <p class="section-subtitle">Grouped by Agriculture, Dairy, Agro-Units, and Households/MSMEs</p>
+        <div id="schemesAccordion" class="accordion"></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="logo-circle small">Ag</div>
+          <p>Indicative investment and revenue ranges. Verify locally before investing.</p>
+        </div>
+        <div>
+          <h4>Sections</h4>
+          <ul>
+            <li><a href="#crops">Crops</a></li>
+            <li><a href="#states">States</a></li>
+            <li><a href="#units">Agro Units</a></li>
+            <li><a href="#schemes">Schemes</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="#">info@example.com</a></li>
+            <li><a href="#">+91-00000 00000</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="legal">© <span id="year"></span> Agro Intelligence. All rights reserved.</div>
+    </div>
+  </footer>
+
+  <script src="./data.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
